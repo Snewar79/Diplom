@@ -1,97 +1,136 @@
-
-/* Copyright (c) Mark J. Kilgard, 1997. */
-
-/* This program is freely distributable without licensing fees 
-   and is provided without guarantee or warrantee expressed or 
-   implied. This program is -not- in the public domain. */
-
-/* This program was requested by Patrick Earl; hopefully someone else
-   will write the equivalent Direct3D immediate mode program. */
-
 #include <GL/glut.h>
-#include "model_parser.h"
-#include <vector>
+#include <math.h>
 #include <iostream>
+ 
+// инициализация переменных цвета в 1.0
+// треугольник - белый
+float red=1.0f, blue=1.0f, green=1.0f;
+ 
+float postion[] = {0, 0, 5};
+float angely = 0;
+float angelx = 3.14 / 2;
+float look[] = {0, 0, 0};
 
-double drand()
-{
-    return (double)(rand() % 100) / 99;
+// угол поворота
+float angle = 0.0f;
+ 
+void changeSize(int w, int h) {
+	// предотвращение деления на ноль
+	if (h == 0)
+		h = 1;
+	float ratio =  w * 1.0 / h;
+	// используем матрицу проекции
+	glMatrixMode(GL_PROJECTION);
+	// обнуляем матрицу
+	glLoadIdentity();
+	// установить параметры вьюпорта
+	glViewport(0, 0, w, h);
+	// установить корректную перспективу
+	gluPerspective(45.0f, ratio, 0.1f, 100.0f);
+	// вернуться к матрице проекции
+	glMatrixMode(GL_MODELVIEW);
 }
+ 
+void renderScene(void) {
+ 
+	// очистить буфер цвета и глубины.
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	// обнулить трансформацию
+	glLoadIdentity();
+	// установить камеру
+	gluLookAt( postion[0], postion[1], postion[2],
+		   look[0], look[1],  look[2],
+		   0.0f, 1.0f,  0.0f);
+	//поворот на заданную величину
+	//glRotatef(angle, 0.0f, 1.0f, 0.0f);
+	// установить цвет модели
+	glColor3f(red, green, blue);
+	glBegin(GL_TRIANGLES);
+		glVertex3f(-2.0f,-2.0f, 0.0f);
+		glVertex3f( 0.0f, 2.0f, 0.0);
+		glVertex3f( 2.0f,-2.0f, 0.0);
+	glEnd();
+ 
+    
 
-GLfloat light_diffuse[] = {1.0, 0.0, 0.0, 1.0};  /* Red diffuse light. */
-GLfloat light_position[] = {3.0, 3.0, 3.0, 0.0};  /* Infinite light location. */
+    //std::cout << postion[1] << "\n";
 
-void
-drawBox(void)
-{
-    std::vector< glm::vec3 > vertices;
-    std::vector< glm::vec3 > faces;
-    model_parser parser;
+	glutSwapBuffers();
+}
+ 
+void processNormalKeys(unsigned char key, int x, int y) {
+ 
+	if (key == 27)
+		exit(0);
 
-    bool res = parser.loadOBJ("cube.obj", vertices, faces);
-    std::cout << "res = " << res << " size = " << faces.size() <<"\n";
-    glClear(GL_COLOR_BUFFER_BIT);
+    //angely += 0.0001;
+    //angelx += 0.0001;
 
-    for (int i = 0; i < faces.size(); i++){
-       glBegin(GL_TRIANGLES);
-        glColor3d(0.5, 1, 1);      // рисуем треугольник
-        glVertex3d(vertices[faces[i].x].x, vertices[faces[i].x].y, vertices[faces[i].x].z);
-        glVertex3d(vertices[faces[i].y].x, vertices[faces[i].y].y, vertices[faces[i].y].z);
-        glVertex3d(vertices[faces[i].z].x, vertices[faces[i].z].y, vertices[faces[i].z].z);
-       glEnd();
+    
+
+    if (key == 'a')
+    {
+        angely -= 0.1;
     }
+
+    if (key == 'd')
+    {
+        angely += 0.1;
+    }
+
+    if (key == 'w')
+    {
+        angelx -= 0.1;
+    }
+
+    if (key == 's')
+    {
+        angelx += 0.1;
+    }
+
+    postion[0] = 5 * sin(angelx) * sin(angely);
+    postion[2] = 5 * sin(angelx) * cos(angely);
+    postion[1] = 5 * cos(angelx);
 }
-
-void
-display(void)
-{
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  drawBox();
-  glutSwapBuffers();
+ 
+void processSpecialKeys(int key, int x, int y) {
+ 
+	switch(key) {
+		case GLUT_KEY_F1 :
+				red = 1.0;
+				green = 0.0;
+				blue = 0.0; break;
+		case GLUT_KEY_F2 :
+				red = 0.0;
+				green = 1.0;
+				blue = 0.0; break;
+		case GLUT_KEY_F3 :
+				red = 0.0;
+				green = 0.0;
+				blue = 1.0; break;
+	}
 }
-
-void
-init(void)
-{
-  /* Setup cube vertex data. */
-
-  /* Enable a single OpenGL light. */
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-  glEnable(GL_LIGHT0);
-  glEnable(GL_LIGHTING);
-
-  /* Use depth buffering for hidden surface elimination. */
-  glEnable(GL_DEPTH_TEST);
-
-  /* Setup the view of the cube. */
-  glMatrixMode(GL_PROJECTION);
-  gluPerspective( /* field of view in degree */ 40.0,
-    /* aspect ratio */ 1.0,
-    /* Z near */ 1.0, /* Z far */ 10.0);
-  glMatrixMode(GL_MODELVIEW);
-  gluLookAt(0.0, 0.0, 5.0,  /* eye is at (0,0,5) */
-    0.0, 0.0, 0.0,      /* center is at (0,0,0) */
-    0.0, 1.0, 0.);      /* up is in positive Y direction */
-
-  /* Adjust cube position to be asthetic angle. */
-  glTranslatef(0.0, 0.0, -1.0);
-  glRotatef(60, 1.0, 0.0, 0.0);
-  glRotatef(-20, 0.0, 0.0, 1.0);
+ 
+int main(int argc, char **argv) {
+ 
+	// инициализация
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+	glutInitWindowPosition(100,100);
+	glutInitWindowSize(400,400);
+	glutCreateWindow("Урок 4");
+ 
+	// регистрация
+	glutDisplayFunc(renderScene);
+	glutReshapeFunc(changeSize);
+	glutIdleFunc(renderScene);
+ 
+	// наши новые функции
+	glutKeyboardFunc(processNormalKeys);
+	glutSpecialFunc(processSpecialKeys);
+ 
+	// основной цикл
+	glutMainLoop();
+ 
+	return 1;
 }
-
-int
-main(int argc, char **argv)
-{
-  srand(0);
-
-  glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-  glutCreateWindow("red 3D lighted cube");
-  glutDisplayFunc(display);
-  init();
-  glutMainLoop();
-
-  return 0;             /* ANSI C requires main to return int. */
-}
-
