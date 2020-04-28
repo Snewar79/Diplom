@@ -6,7 +6,8 @@
 // треугольник - белый
 float red=1.0f, blue=1.0f, green=1.0f;
  
-float postion[] = {0, 0, 5};
+float postion[] = {0, 0, 0};
+float offset[] = {0, 0, 5};
 float angely = 0;
 float angelx = 3.14 / 2;
 float look[] = {0, 0, 0};
@@ -38,8 +39,8 @@ void renderScene(void) {
 	// обнулить трансформацию
 	glLoadIdentity();
 	// установить камеру
-	gluLookAt( postion[0], postion[1], postion[2],
-		   look[0], look[1],  look[2],
+	gluLookAt( postion[0] + offset[0], postion[1] + offset[1], postion[2] + offset[2],
+		   look[0] + offset[0], look[1] + offset[1],  look[2] + offset[2],
 		   0.0f, 1.0f,  0.0f);
 	//поворот на заданную величину
 	//glRotatef(angle, 0.0f, 1.0f, 0.0f);
@@ -53,7 +54,7 @@ void renderScene(void) {
  
     
 
-    //std::cout << postion[1] << "\n";
+    std::cout << angelx << " " << angely << "\n";
 
 	glutSwapBuffers();
 }
@@ -63,34 +64,56 @@ void processNormalKeys(unsigned char key, int x, int y) {
 	if (key == 27)
 		exit(0);
 
-    //angely += 0.0001;
-    //angelx += 0.0001;
-
-    
-
     if (key == 'a')
     {
-        angely -= 0.1;
+        float perp[] = {0, 0};
+
+        float x = sin(angely) * 0.1;
+        float y = cos(angely) * 0.1;
+        float tmp = x;
+        x = y;
+        y = tmp;
+        x *= -1;
+
+        offset[0] += x;
+        offset[1] -= 0;
+        offset[2] += y;
     }
 
     if (key == 'd')
     {
-        angely += 0.1;
+        float perp[] = {0, 0};
+
+        float x = sin(angely) * 0.1;
+        float y = cos(angely) * 0.1;
+        float tmp = x;
+        x = y;
+        y = tmp;
+        x *= -1;
+
+        offset[0] -= x;
+        offset[1] -= 0;
+        offset[2] -= y;
     }
 
     if (key == 'w')
     {
-        angelx -= 0.1;
+        //angelx -= 0.1;
+        offset[0] -= postion[0];
+        offset[1] -= postion[1];
+        offset[2] -= postion[2];
     }
 
     if (key == 's')
     {
-        angelx += 0.1;
+        offset[0] += postion[0];
+        offset[1] += postion[1];
+        offset[2] += postion[2];
     }
 
-    postion[0] = 5 * sin(angelx) * sin(angely);
-    postion[2] = 5 * sin(angelx) * cos(angely);
-    postion[1] = 5 * cos(angelx);
+    postion[0] = 0.1 * sin(angelx) * sin(angely);
+    postion[2] = 0.1 * sin(angelx) * cos(angely);
+    postion[1] = 0.1 * cos(angelx);
 }
  
 void processSpecialKeys(int key, int x, int y) {
@@ -109,6 +132,30 @@ void processSpecialKeys(int key, int x, int y) {
 				green = 0.0;
 				blue = 1.0; break;
 	}
+
+    if (key == GLUT_KEY_RIGHT)
+    {
+        angely -= 0.1;
+    }
+
+    if (key == GLUT_KEY_LEFT)
+    {
+        angely += 0.1;
+    }
+
+    if (key == GLUT_KEY_UP)
+    {
+        angelx -= 0.1;
+    }
+
+    if (key == GLUT_KEY_DOWN)
+    {
+        angelx += 0.1;
+    }
+
+    postion[0] = 0.1 * sin(angelx) * sin(angely);
+    postion[2] = 0.1 * sin(angelx) * cos(angely);
+    postion[1] = 0.1 * cos(angelx);
 }
  
 int main(int argc, char **argv) {
