@@ -48,11 +48,10 @@ void renderScene(void) {
 	glColor3f(red, green, blue);
 	glBegin(GL_TRIANGLES);
 		glColor3d(1, 0.0, 0.0); 
-
-		
-		glVertex3f( 0.0f,0.0f, 1.0);
-		glVertex3f( 1.0f, 1.0f, 0.0);
 		glVertex3f(1,-1.0f, 0.0f);
+		glVertex3f( 1.0f, 1.0f, 0.0);
+		glVertex3f( 0.0f,0.0f, 1.0);
+
 
 		glColor3d(0.0, 1.0, 0.0); 
 		glVertex3f( 1.0f, 1.0f, 0.0f);
@@ -181,12 +180,10 @@ int main(int argc, char **argv) {
  
 	// инициализация
 	glutInit(&argc, argv);
-	glCullFace(GL_FRONT_AND_BACK);
-	glutInitDisplayMode( GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
-	
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(100,100);
 	glutInitWindowSize(400,400);
-	glutCreateWindow("");
+	glutCreateWindow("Урок 4");
  
 	// регистрация
 	glutDisplayFunc(renderScene);
