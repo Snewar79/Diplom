@@ -1,4 +1,4 @@
-
+#pragma once
 #include <vector>
 #include <iostream>
 
@@ -14,6 +14,10 @@ public:
     data_holder(int _size, data_type default_value){
         data_size = _size;
         data = std::vector<std::vector<std::vector<data_type>>>(data_size, std::vector<std::vector<data_type>>(data_size, std::vector<data_type>(data_size, default_value)));
+    }
+
+    data_holder(){
+        data_size = 0;
     }
 
     int size(){
