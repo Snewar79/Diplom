@@ -13,9 +13,10 @@ std::vector<std::vector<glm::vec3>> faces_data;
 
 void draw_box()
 {
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glBegin(GL_POLYGON);
 
-    glColor4f( 0.0, 0.0, 1.0, 0.2 );     glVertex3f(  0.5, -0.5, -0.5 );      // P1 красная
+    glColor4f( 1.0, 1.0, 1.0, 0.5 );     glVertex3f(  0.5, -0.5, -0.5 );      // P1 красная
     glVertex3f(  0.5,  0.5, -0.5 );      // P2 зеленая
     glVertex3f( -0.5,  0.5, -0.5 );      // P3 синяя
     glVertex3f( -0.5, -0.5, -0.5 );      // P4 фиолетовая
@@ -61,6 +62,8 @@ void draw_box()
     glVertex3f( -0.5, -0.5,  0.5 );
     glVertex3f( -0.5, -0.5, -0.5 );
     glEnd();
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 }
 
@@ -108,7 +111,7 @@ void display(){
 
     //glScalef( 0.0, 0.2, 0.2 );          // Not included
     draw_faces_data();
-    //draw_box();
+    draw_box();
 
     glFlush();
     glutSwapBuffers();
