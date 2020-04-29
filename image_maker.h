@@ -11,6 +11,59 @@ double rotate_x = 0;
 
 std::vector<std::vector<glm::vec3>> faces_data;
 
+void draw_box()
+{
+    glBegin(GL_POLYGON);
+
+    glColor4f( 0.0, 0.0, 1.0, 0.2 );     glVertex3f(  0.5, -0.5, -0.5 );      // P1 красная
+    glVertex3f(  0.5,  0.5, -0.5 );      // P2 зеленая
+    glVertex3f( -0.5,  0.5, -0.5 );      // P3 синяя
+    glVertex3f( -0.5, -0.5, -0.5 );      // P4 фиолетовая
+
+    glEnd();
+
+        // Белая сторона — ЗАДНЯЯ
+    glBegin(GL_POLYGON);
+    glVertex3f(  0.5, -0.5, 0.5 );
+    glVertex3f(  0.5,  0.5, 0.5 );
+    glVertex3f( -0.5,  0.5, 0.5 );
+    glVertex3f( -0.5, -0.5, 0.5 );
+    glEnd();
+
+    // Фиолетовая сторона — ПРАВАЯ
+    glBegin(GL_POLYGON);
+    glVertex3f( 0.5, -0.5, -0.5 );
+    glVertex3f( 0.5,  0.5, -0.5 );
+    glVertex3f( 0.5,  0.5,  0.5 );
+    glVertex3f( 0.5, -0.5,  0.5 );
+    glEnd();
+
+    // Зеленая сторона — ЛЕВАЯ
+    glBegin(GL_POLYGON);
+    glVertex3f( -0.5, -0.5,  0.5 );
+    glVertex3f( -0.5,  0.5,  0.5 );
+    glVertex3f( -0.5,  0.5, -0.5 );
+    glVertex3f( -0.5, -0.5, -0.5 );
+    glEnd();
+
+    // Синяя сторона — ВЕРХНЯЯ
+    glBegin(GL_POLYGON);
+    glVertex3f(  0.5,  0.5,  0.5 );
+    glVertex3f(  0.5,  0.5, -0.5 );
+    glVertex3f( -0.5,  0.5, -0.5 );
+    glVertex3f( -0.5,  0.5,  0.5 );
+    glEnd();
+
+    // Красная сторона — НИЖНЯЯ
+    glBegin(GL_POLYGON);
+    glVertex3f(  0.5, -0.5, -0.5 );
+    glVertex3f(  0.5, -0.5,  0.5 );
+    glVertex3f( -0.5, -0.5,  0.5 );
+    glVertex3f( -0.5, -0.5, -0.5 );
+    glEnd();
+
+}
+
 void draw_faces_data()
 {
     for (int i = 0; i < faces_data.size(); i++)
@@ -18,11 +71,28 @@ void draw_faces_data()
         //std::cout << "lets pring grain " << i << "\n";
         //std::cout << faces_data[i][0][0] << faces_data[i][0][1] <<  faces_data[i][0][2] << "\n";
         glBegin(GL_TRIANGLES);
-        glColor3f( 1.0, 0.0, 0.0 );     glVertex3f(  faces_data[i][0][0], faces_data[i][0][1], faces_data[i][0][2] );      // P1 is red
-        glColor3f( 0.0, 1.0, 0.0 );     glVertex3f(  faces_data[i][1][0], faces_data[i][1][1], faces_data[i][1][2] );      // P2 is green
-        glColor3f( 0.0, 0.0, 1.0 );     glVertex3f(  faces_data[i][2][0], faces_data[i][2][1], faces_data[i][2][2] );      // P3 is blue 
+        glColor3f( 0.5, 0.5, 0.5 );     
+            glVertex3f(  faces_data[i][0][0], faces_data[i][0][1], faces_data[i][0][2] );      // P1 is red
+            glVertex3f(  faces_data[i][1][0], faces_data[i][1][1], faces_data[i][1][2] );      // P2 is green
+            glVertex3f(  faces_data[i][2][0], faces_data[i][2][1], faces_data[i][2][2] );      // P3 is blue 
         glEnd();
     }
+
+           glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+               for (int i = 0; i < faces_data.size(); i++)
+    {
+        //std::cout << "lets pring grain " << i << "\n";
+        //std::cout << faces_data[i][0][0] << faces_data[i][0][1] <<  faces_data[i][0][2] << "\n";
+        glBegin(GL_TRIANGLES);
+        glColor3f( 0.1, 0.1, 0.1 );     
+            glVertex3f(  faces_data[i][0][0], faces_data[i][0][1], faces_data[i][0][2] );      // P1 is red
+            glVertex3f(  faces_data[i][1][0], faces_data[i][1][1], faces_data[i][1][2] );      // P2 is green
+            glVertex3f(  faces_data[i][2][0], faces_data[i][2][1], faces_data[i][2][2] );      // P3 is blue 
+        glEnd();
+    }
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 }
 
@@ -36,10 +106,9 @@ void display(){
     glRotatef( rotate_x, 1.0, 0.0, 0.0 );
     glRotatef( rotate_y, 0.0, 1.0, 0.0 );
 
-    glScalef( 0.2, 0.2, 0.2 );          // Not included
-
-
+    //glScalef( 0.0, 0.2, 0.2 );          // Not included
     draw_faces_data();
+    //draw_box();
 
     glFlush();
     glutSwapBuffers();
@@ -87,6 +156,10 @@ public:
         // Callback functions
         glutDisplayFunc(display);
         glutSpecialFunc(specialKeys);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glLineWidth(2.0f);
 
     }
 };

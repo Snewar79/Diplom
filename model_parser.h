@@ -137,6 +137,26 @@ public:
             }
         }
 
+        double max = x_length;
+        if (max < y_length)
+            max = y_length;
+        if (max < z_length)
+            max = z_length;
+
+        max *= 2;
+
+        std::cout << "max length = " << max << "\n";
+
+        for (int i = 0; i < true_faces.size(); i++)
+        {
+            for (int point = 0; point < 3; point++)
+            {
+                true_faces[i][point][0] /= max;
+                true_faces[i][point][1] /= max;
+                true_faces[i][point][2] /= max;
+            }
+        }
+
 
     }
 
