@@ -54,7 +54,7 @@ bool isCross(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 x, glm::vec3 r)
 
     double determ = (ac * r[0] + bc * r[1] + cc * r[2]);
 
-    if (abs(determ) < 0.0001)
+    if (abs(determ) < 0.000001)
     {
         return false;
     }
@@ -86,7 +86,7 @@ bool isCross(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 x, glm::vec3 r)
 
     //std::cout << " s1 = " << abc << " s2 = " << abd + bcd + acd << "\n";
 
-    if (abs(abc - (abd + bcd + acd)) < 0.01){
+    if (abs(abc - (abd + bcd + acd)) < 0.001){
         //std:: cout << "return true\n";
         return true;
     }
@@ -100,9 +100,9 @@ bool check_point(glm::vec3 point, std::vector<std::vector<glm::vec3>> true_faces
     int outside = 0;
 
     glm::vec3 r;
-    for (double x = -1.123; x < 1; x += 0.2){
-        for (double y = -1.123; y < 1; y += 0.2){
-            for (double z = -1.123; z < 1; z += 0.2){
+    for (double x = -0.5; x < 0.5; x += 0.2){
+        for (double y = -0.5; y < 0.5; y += 0.2){
+            for (double z = -0.5; z < 0.5; z += 0.2){
                 r = glm::vec3({x, y, z});
                     int cross_count = 0;
                     for (int i = 0; i < true_faces.size(); i++){
@@ -139,14 +139,14 @@ void generate_cube(std::vector<std::vector<glm::vec3>> &faces, glm::vec3 point)
 {
 
     glm::vec3 p1 = {0, 0, 0};
-    glm::vec3 p2 = {0, 0.1, 0};
-    glm::vec3 p3 = {0.1, 0.1, 0};
-    glm::vec3 p4 = {0.1, 0.1, 0};
+    glm::vec3 p2 = {0, 0.01, 0};
+    glm::vec3 p3 = {0.01, 0.01, 0};
+    glm::vec3 p4 = {0.01, 0.01, 0};
 
-    glm::vec3 p5 = {0.1, 0, 0.1};
-    glm::vec3 p6 = {0, 0, 0.1};
-    glm::vec3 p7 = {0, 0.1, 0.1};
-    glm::vec3 p8 = {0.1, 0.1, 0.1};
+    glm::vec3 p5 = {0.01, 0, 0.01};
+    glm::vec3 p6 = {0, 0, 0.01};
+    glm::vec3 p7 = {0, 0.01, 0.01};
+    glm::vec3 p8 = {0.01, 0.01, 0.01};
 
     p1 += point;
     p2 += point;
@@ -193,9 +193,9 @@ int main(int argc, char** argv)
 
     check_point(glm::vec3{0.7, 0.5, 0.5}, true_faces);
 
-    for (double x = -1; x < 1; x += 0.05){
-        for (double y = -1; y < 1; y += 0.05){
-            for (double z = -1; z < 1; z += 0.05){
+    for (double x = -0.5; x < 0.5; x += 0.01){
+        for (double y = -0.5; y < 0.5; y += 0.01){
+            for (double z = -0.5; z < 0.5; z += 0.01){
                 //std::cout << "check point " << x << " " << y << " " << z << "\n";
                 res = check_point(glm::vec3{x, y, z}, true_faces);
 

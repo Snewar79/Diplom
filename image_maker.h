@@ -70,6 +70,7 @@ void draw_box()
 
 void draw_faces_data()
 {
+    /*
     for (int i = 0; i < faces_data.size(); i++)
     {
         //std::cout << "lets pring grain " << i << "\n";
@@ -97,7 +98,7 @@ void draw_faces_data()
     }
     
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
+    */
     for (int i = 0; i < inside_data.size(); i++)
     {
         //std::cout << "lets prin grain inside" << i << "\n";
