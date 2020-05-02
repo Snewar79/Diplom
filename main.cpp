@@ -3,6 +3,9 @@
 #include "model_parser.h"
 #include "image_maker.h"
 #include <thread>
+#include <eigen3/Eigen/Dense>
+
+using Eigen::MatrixXd;
 
 void create_image_loop(int *argc, char** argv)
 {
@@ -86,7 +89,7 @@ bool isCross(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 x, glm::vec3 r)
 
     //std::cout << " s1 = " << abc << " s2 = " << abd + bcd + acd << "\n";
 
-    if (abs(abc - (abd + bcd + acd)) < 0.001){
+    if (abs(abc - (abd + bcd + acd)) < 0.0001){
         //std:: cout << "return true\n";
         return true;
     }
@@ -139,14 +142,14 @@ void generate_cube(std::vector<std::vector<glm::vec3>> &faces, glm::vec3 point)
 {
 
     glm::vec3 p1 = {0, 0, 0};
-    glm::vec3 p2 = {0, 0.01, 0};
-    glm::vec3 p3 = {0.01, 0.01, 0};
-    glm::vec3 p4 = {0.01, 0.01, 0};
+    glm::vec3 p2 = {0, 0.05, 0};
+    glm::vec3 p3 = {0.05, 0.05, 0};
+    glm::vec3 p4 = {0.05, 0.05, 0};
 
-    glm::vec3 p5 = {0.01, 0, 0.01};
-    glm::vec3 p6 = {0, 0, 0.01};
-    glm::vec3 p7 = {0, 0.01, 0.01};
-    glm::vec3 p8 = {0.01, 0.01, 0.01};
+    glm::vec3 p5 = {0.05, 0, 0.05};
+    glm::vec3 p6 = {0, 0, 0.05};
+    glm::vec3 p7 = {0, 0.05, 0.05};
+    glm::vec3 p8 = {0.05, 0.05, 0.05};
 
     p1 += point;
     p2 += point;
@@ -178,7 +181,14 @@ void generate_cube(std::vector<std::vector<glm::vec3>> &faces, glm::vec3 point)
 
 int main(int argc, char** argv)
 {
-    std::thread t1(create_image_loop, &argc, argv);
+
+    MatrixXd m(2,2);
+    m(0,0) = 3;
+    m(1,0) = 2.5;
+    m(0,1) = -1;
+    m(1,1) = m(1,0) + m(0,1);
+    std::cout << m << std::endl;
+    /*std::thread t1(create_image_loop, &argc, argv);
 
     model_parser parser;
 
@@ -191,24 +201,45 @@ int main(int argc, char** argv)
 
     faces_data = true_faces;
 
-    check_point(glm::vec3{0.7, 0.5, 0.5}, true_faces);
 
-    for (double x = -0.5; x < 0.5; x += 0.01){
-        for (double y = -0.5; y < 0.5; y += 0.01){
-            for (double z = -0.5; z < 0.5; z += 0.01){
-                //std::cout << "check point " << x << " " << y << " " << z << "\n";
-                res = check_point(glm::vec3{x, y, z}, true_faces);
-
-                if (res)
-                {
-                    generate_cube(inside_data, glm::vec3{x,y,z});
-                    //std::cout << "power = " << inside_data.size() << "\n";
-                }
-
-            }
-        }
-    }
-    std::cout << "parsing is over\n";
     t1.join();
+    */
+
+   diff_system system(10);
+
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+    system.forward_step();
+
+
     return 0;
 }
