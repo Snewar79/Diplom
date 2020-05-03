@@ -60,10 +60,10 @@ public:
 
         for (int i = 0; i < temp_faces.size(); i++)
         {
-            std::cout << "process [" << i << "] face\n";
-            std::cout << temp_faces[i][0] << " ";
-            std::cout << temp_faces[i][1] << " ";
-            std::cout << temp_faces[i][2] << "\n";
+            //std::cout << "process [" << i << "] face\n";
+            //std::cout << temp_faces[i][0] << " ";
+            //std::cout << temp_faces[i][1] << " ";
+            //std::cout << temp_faces[i][2] << "\n";
 
             std::vector<glm::vec3> temp;
             temp.push_back(out_vertices[temp_faces[i][0] - 1]);
@@ -119,9 +119,9 @@ public:
             }
         }
 
-        std::cout << "x == " << max_x - min_x << "\n";
-        std::cout << "y == " << max_y - min_y << "\n";
-        std::cout << "y == " << max_z - min_z << "\n";
+        //std::cout << "x == " << max_x - min_x << "\n";
+        //std::cout << "y == " << max_y - min_y << "\n";
+        //std::cout << "y == " << max_z - min_z << "\n";
 
         double x_length = (max_x - min_x) / 2;
         double y_length = (max_y - min_y) / 2;

@@ -80,7 +80,6 @@ public:
 
         temp.print();
         exist.print();
-        //type.print();
 
         math_hash();
 
@@ -100,7 +99,7 @@ public:
         }
         }
         active_points = xyz2n.size();
-        std::cout << "hash maps is ok, size == " << xyz2n.size() << " " << n2xyz.size() << "\n";
+        //std::cout << "hash maps is ok, size == " << xyz2n.size() << " " << n2xyz.size() << "\n";
     }
 
     bool isInit(){
@@ -108,7 +107,7 @@ public:
     }
 
     void forward_step(){
-        std::cout << "a = " << a << " tau = " << tau << " h = " << h << "\n";
+        //std::cout << "a = " << a << " tau = " << tau << " h = " << h << "\n";
         std::vector<std::vector<float>> matrixA(active_points, std::vector<float>(active_points, 0.0));
         std::vector<float> b(active_points, 0);
         int skip_count = 0;
@@ -123,8 +122,8 @@ public:
             skip_count = 0;
 
             triple current_triple = n2xyz[i];
-            std::cout << "[" << i << "]\n";
-            std::cout << "triple is " << current_triple.x << " " << current_triple.y << " " << current_triple.z << "\n";
+            //std::cout << "[" << i << "]\n";
+            //std::cout << "triple is " << current_triple.x << " " << current_triple.y << " " << current_triple.z << "\n";
 
             float current_temp = temp[current_triple.x][current_triple.y][current_triple.z];
 
@@ -143,7 +142,7 @@ public:
             // xUp
             if (exist[xUp.x][xUp.y][xUp.z])
             {
-                std::cout << "has xUp\n";
+                //std::cout << "has xUp\n";
                 matrixA[i][xyz2n[xUp]] = (a * a * tau) / (h * h); //fixme
                 //std::cout << "xyz = " <<  xUp.x << " " << xUp.y << " " << xUp.z << "\n";
                 A(i, xyz2n[xUp]) = (a * a * tau) / (h * h);
@@ -156,7 +155,7 @@ public:
             // xDown
             if (exist[xDown.x][xDown.y][xDown.z])
             {
-                std::cout << "has xDown\n";
+                //std::cout << "has xDown\n";
                 matrixA[i][xyz2n[xDown]] = (a * a * tau) / (h * h); //fixme
                 A(i, xyz2n[xDown]) = (a * a * tau) / (h * h);
             }
@@ -168,7 +167,7 @@ public:
             //yUp
             if (exist[yUp.x][yUp.y][yUp.z])
             {
-                std::cout << "has yUp\n";
+                //std::cout << "has yUp\n";
                 matrixA[i][xyz2n[yUp]] = (a * a * tau) / (h * h); //fixme
                 A(i, xyz2n[yUp]) = (a * a * tau) / (h * h);
             }
@@ -180,7 +179,7 @@ public:
             //yDown
             if (exist[yDown.x][yDown.y][yDown.z])
             {
-                std::cout << "has yDown\n";
+                //std::cout << "has yDown\n";
                 matrixA[i][xyz2n[yDown]] = (a * a * tau) / (h * h); //fixme
                 A(i, xyz2n[yDown]) = (a * a * tau) / (h * h);
             }
@@ -192,7 +191,7 @@ public:
             //zUp
             if (exist[zUp.x][zUp.y][zUp.z])
             {
-                std::cout << "has zUp" << zUp.x << " " << zUp.y << " " << zUp.z << "\n";
+                //std::cout << "has zUp" << zUp.x << " " << zUp.y << " " << zUp.z << "\n";
                 matrixA[i][xyz2n[zUp]] = (a * a * tau) / (h * h); //fixme
                 A(i, xyz2n[zUp]) = (a * a * tau) / (h * h);
             }
@@ -204,7 +203,7 @@ public:
             //zDown
             if (exist[zDown.x][zDown.y][zDown.z])
             {
-                std::cout << "has zDown\n";
+                //std::cout << "has zDown\n";
                 matrixA[i][xyz2n[zDown]] = (a * a * tau) / (h * h); //fixme
                 A(i, xyz2n[zDown]) = (a * a * tau) / (h * h);
             }
@@ -215,7 +214,7 @@ public:
 
             matrixA[i][i] = - (1 + ((6 - skip_count) * a * a * tau) / (h * h));
             A(i, i) = matrixA[i][i];
-            std::cout << "Set " << i << "|" << i << " by " << matrixA[i][i] << "\n";
+            //std::cout << "Set " << i << "|" << i << " by " << matrixA[i][i] << "\n";
 
             b[i] = -current_temp;
             //b[i] -= (a * a * tau * skip_count * current_temp) / (h * h);
@@ -223,16 +222,16 @@ public:
 
         }
 
-        std::cout << "Matrix A is = " << "\n" << A << "\n";
-        std::cout << "vector B is = " << "\n" << B << "\n";
+        //std::cout << "Matrix A is = " << "\n" << A << "\n";
+        //std::cout << "vector B is = " << "\n" << B << "\n";
 
         VectorXf x = A.partialPivLu().solve(B);
 
         //VectorXf x = A.bdcSvd(ComputeThinU | ComputeThinV).solve(B);
 
-        std::cout << "vector X is = " << "\n" << x << "\n";
+        //std::cout << "vector X is = " << "\n" << x << "\n";
 
-        std::cout << "skip_count = " << skip_count << "\n";
+        //std::cout << "skip_count = " << skip_count << "\n";
 
         for (int i = 0; i < active_points; i ++){
             triple current_triple = n2xyz[i];
@@ -240,8 +239,8 @@ public:
 
         }
 
-        std::cout << "forward step is called\n";
-        std::cout << "ss = " << simple_temp << "\n";
+        //std::cout << "forward step is called\n";
+        //std::cout << "ss = " << simple_temp << "\n";
     }
 
 };
