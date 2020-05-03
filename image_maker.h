@@ -2,7 +2,6 @@
 #include <math.h>
 #include <GL/glut.h>
 
-
 void display();
 void specialKeys();
 
@@ -11,57 +10,84 @@ double rotate_x = 0;
 
 std::vector<std::vector<glm::vec3>> faces_data;
 std::vector<std::vector<glm::vec3>> inside_data;
+std::vector<std::vector<std::vector<bool>>> exist_points;
+void draw_box(double size, glm::vec3 offset, bool fill);
 
-void draw_box()
+void print_exist_points(){
+    
+    int side = exist_points.size();
+
+    //std::cout << "try print " << side << "\n";
+    for (int x = 0; x < side; x++)
+    for (int y = 0; y < side; y++)
+    for (int z = 0; z < side; z++){
+        double px = -0.5 + double(x) / side + 0.5 / side;
+        double py = -0.5 + double(y) / side + 0.5 / side;
+        double pz = -0.5 + double(z) / side + 0.5 / side;
+
+        glm::vec3 point = {px, y, pz};
+        if (exist_points[x][y][z])
+        {
+            draw_box(1.0 /( 2 * side), glm::vec3{px, py, pz}, true);
+        }
+    }
+}
+
+void draw_box(double size, glm::vec3 offset, bool fill )
 {
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    if (fill)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
     glBegin(GL_POLYGON);
 
-    glColor4f( 1.0, 1.0, 1.0, 0.5 );     glVertex3f(  0.5, -0.5, -0.5 );      // P1 красная
-    glVertex3f(  0.5,  0.5, -0.5 );      // P2 зеленая
-    glVertex3f( -0.5,  0.5, -0.5 );      // P3 синяя
-    glVertex3f( -0.5, -0.5, -0.5 );      // P4 фиолетовая
+    glColor4f( 1.0, 1.0, 1.0, 1 );     
+    glVertex3f(  size + offset.x, -size + offset.y, -size + offset.z );      // P1 красная
+    glVertex3f(  size + offset.x,  size + offset.y, -size + offset.z );      // P2 зеленая
+    glVertex3f( -size + offset.x,  size + offset.y, -size + offset.z );      // P3 синяя
+    glVertex3f( -size + offset.x, -size + offset.y, -size + offset.z );      // P4 фиолетовая
 
     glEnd();
 
         // Белая сторона — ЗАДНЯЯ
     glBegin(GL_POLYGON);
-    glVertex3f(  0.5, -0.5, 0.5 );
-    glVertex3f(  0.5,  0.5, 0.5 );
-    glVertex3f( -0.5,  0.5, 0.5 );
-    glVertex3f( -0.5, -0.5, 0.5 );
+    glVertex3f(  size + offset.x, -size + offset.y, size + offset.z );
+    glVertex3f(  size + offset.x,  size + offset.y, size + offset.z );
+    glVertex3f( -size + offset.x,  size + offset.y, size + offset.z );
+    glVertex3f( -size + offset.x, -size + offset.y, size + offset.z );
     glEnd();
 
     // Фиолетовая сторона — ПРАВАЯ
     glBegin(GL_POLYGON);
-    glVertex3f( 0.5, -0.5, -0.5 );
-    glVertex3f( 0.5,  0.5, -0.5 );
-    glVertex3f( 0.5,  0.5,  0.5 );
-    glVertex3f( 0.5, -0.5,  0.5 );
+    glVertex3f( size + offset.x, -size + offset.y, -size + offset.z );
+    glVertex3f( size + offset.x,  size + offset.y, -size + offset.z );
+    glVertex3f( size + offset.x,  size + offset.y,  size + offset.z );
+    glVertex3f( size + offset.x, -size + offset.y,  size  + offset.z);
     glEnd();
 
     // Зеленая сторона — ЛЕВАЯ
     glBegin(GL_POLYGON);
-    glVertex3f( -0.5, -0.5,  0.5 );
-    glVertex3f( -0.5,  0.5,  0.5 );
-    glVertex3f( -0.5,  0.5, -0.5 );
-    glVertex3f( -0.5, -0.5, -0.5 );
+    glVertex3f( -size + offset.x, -size + offset.y,  size + offset.z );
+    glVertex3f( -size + offset.x,  size + offset.y,  size + offset.z );
+    glVertex3f( -size + offset.x,  size + offset.y, -size  + offset.z);
+    glVertex3f( -size + offset.x, -size + offset.y, -size + offset.z );
     glEnd();
 
     // Синяя сторона — ВЕРХНЯЯ
     glBegin(GL_POLYGON);
-    glVertex3f(  0.5,  0.5,  0.5 );
-    glVertex3f(  0.5,  0.5, -0.5 );
-    glVertex3f( -0.5,  0.5, -0.5 );
-    glVertex3f( -0.5,  0.5,  0.5 );
+    glVertex3f(  size + offset.x,  size + offset.y,  size + offset.z );
+    glVertex3f(  size + offset.x,  size + offset.y, -size  + offset.z);
+    glVertex3f( -size + offset.x,  size + offset.y, -size  + offset.z);
+    glVertex3f( -size + offset.x,  size + offset.y,  size  + offset.z);
     glEnd();
 
     // Красная сторона — НИЖНЯЯ
     glBegin(GL_POLYGON);
-    glVertex3f(  0.5, -0.5, -0.5 );
-    glVertex3f(  0.5, -0.5,  0.5 );
-    glVertex3f( -0.5, -0.5,  0.5 );
-    glVertex3f( -0.5, -0.5, -0.5 );
+    glVertex3f(  size + offset.x, -size + offset.y, -size  + offset.z);
+    glVertex3f(  size + offset.x, -size + offset.y,  size + offset.z );
+    glVertex3f( -size + offset.x, -size + offset.y,  size  + offset.z);
+    glVertex3f( -size + offset.x, -size + offset.y, -size  + offset.z);
     glEnd();
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -141,7 +167,8 @@ void display(){
 
     //glScalef( 0.0, 0.2, 0.2 );          // Not included
     draw_faces_data();
-    draw_box();
+    draw_box(0.5, glm::vec3{0, 0, 0}, false);
+    print_exist_points();
 
     glFlush();
     glutSwapBuffers();

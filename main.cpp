@@ -182,13 +182,9 @@ void generate_cube(std::vector<std::vector<glm::vec3>> &faces, glm::vec3 point)
 int main(int argc, char** argv)
 {
 
-    MatrixXd m(2,2);
-    m(0,0) = 3;
-    m(1,0) = 2.5;
-    m(0,1) = -1;
-    m(1,1) = m(1,0) + m(0,1);
-    std::cout << m << std::endl;
-    /*std::thread t1(create_image_loop, &argc, argv);
+    
+
+    std::thread t1(create_image_loop, &argc, argv);
 
     model_parser parser;
 
@@ -201,45 +197,12 @@ int main(int argc, char** argv)
 
     faces_data = true_faces;
 
+    exist_points = parser.segmentation(true_faces, 20);
+
+    std::cout << "exist_points = " << exist_points.size() << "\n";
 
     t1.join();
-    */
-
-   diff_system system(10);
-
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-    system.forward_step();
-
+    
 
     return 0;
 }
