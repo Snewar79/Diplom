@@ -28,6 +28,14 @@ public:
         return data[zyx[0]][zyx[1]][zyx[2]];
     }
 
+    std::vector<std::vector<data_type>> &operator[] (int n){
+        return data[n];
+    }
+
+    void set(std::vector<std::vector<std::vector<data_type>>> _exist_points){
+        data = _exist_points;
+    }
+
     void print(){
         for (int z = 0; z < data_size; z++){
             std::cout << "Layer z = " << z << "\n";

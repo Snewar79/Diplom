@@ -60,10 +60,10 @@ public:
 
         for (int i = 0; i < temp_faces.size(); i++)
         {
-            std::cout << "process [" << i << "] face\n";
-            std::cout << temp_faces[i][0] << " ";
-            std::cout << temp_faces[i][1] << " ";
-            std::cout << temp_faces[i][2] << "\n";
+            //std::cout << "process [" << i << "] face\n";
+            //std::cout << temp_faces[i][0] << " ";
+            //std::cout << temp_faces[i][1] << " ";
+            //std::cout << temp_faces[i][2] << "\n";
 
             std::vector<glm::vec3> temp;
             temp.push_back(out_vertices[temp_faces[i][0] - 1]);
@@ -119,9 +119,9 @@ public:
             }
         }
 
-        std::cout << "x == " << max_x - min_x << "\n";
-        std::cout << "y == " << max_y - min_y << "\n";
-        std::cout << "y == " << max_z - min_z << "\n";
+        //std::cout << "x == " << max_x - min_x << "\n";
+        //std::cout << "y == " << max_y - min_y << "\n";
+        //std::cout << "y == " << max_z - min_z << "\n";
 
         double x_length = (max_x - min_x) / 2;
         double y_length = (max_y - min_y) / 2;
@@ -157,109 +157,155 @@ public:
             }
         }
 
-        isCross(true_faces, 10);
-
+        //checkAll(true_faces);
     }
 
-    glm::vec3 vec_multiplication(glm::vec3 a, glm::vec3 b){
-        glm::vec3 coords;
-        
-        for(int i = 0; i < 3; i++) 
-            coords[i]=a[(i+1)%3]*b[(i+2)%3] -a[(i+2)%3]*b[(i+1)%3];
-
-        return coords;
-    }
-
-    double scalar_multiplication(glm::vec3 a, glm::vec3 b)
-    {
-        double sum = 0;
-        for (int i = 0; i < 3; i++)
-            sum += a[i] * b[i];
-
-        return sum;
-    }
-
-    double vec_module(glm::vec3 a)
+    double module_vector(glm::vec3 a)
     {
         return sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
     }
 
-    void trinagle_sides(glm::vec3 a, glm::vec3 b, glm::vec3 c, double &ar, double &br, double &cr)
-    {
-        glm::vec3 ab, bc, ca;
-
-        ab = b - a;
-        bc = c - b;
-        ca = a - c;
-
-        ar = vec_module(ab);
-        br = vec_module(bc);
-        cr = vec_module(ca);
-
-    }
-
     double trinagle_size(glm::vec3 a, glm::vec3 b, glm::vec3 c)
     {
-        double as, bs, cs;
+        double a_side = module_vector(b - a);
+        double b_side = module_vector(c - b);
+        double c_side = module_vector(a - c);
 
-        trinagle_sides(a, b, c, as, bs, cs);
+        //std::cout << a_side << "\n";
 
-        std::cout << "modulse " << " " << as << " " <<  bs << " " <<  cs << "\n";
+        double p = (a_side + c_side + b_side) / 2;
 
-        double p = (as + bs + cs) / 2;
-
-        return sqrt(  p * (p - as) * (p - bs) * (p - cs));
+        return sqrt(p * (p - a_side) * (p - b_side) * (p - c_side));
     }
 
-    bool isCross(std::vector<std::vector<glm::vec3>> true_faces, int segment_on_side)
+
+    bool isCross(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 x, glm::vec3 r)
     {
-        glm::vec3 a = {0, 0, 0};
-        glm::vec3 b = {10, 10, 0};
-        glm::vec3 c = {0, 0, 10};
+        a = a - x;
+        b = b - x;
+        c = c - x; 
+        double p12 = b[0] - a[0];
+        double p22 = b[1] - a[1];
+        double p32 = b[2] - a[2];
 
-        glm::vec3 x = {5, 0, 0}, y = {0, 5, 0};
+        double p13 = c[0] - a[0];
+        double p23 = c[1] - a[1];
+        double p33 = c[2] - a[2];
 
-        glm::vec3 normal = vec_multiplication(b - a, c - a);
+        double ac, bc, cc, dc;
+        ac = p22 * p33 - p23 * p32;
+        bc = p13 * p32 - p12 * p33;
+        cc = p12 * p23 - p13 * p22;
+        dc =    a[0] * (p23 * p32 - p22 * p33) +
+                a[1] * (p12 * p33 - p13 * p32) +
+                a[2] * (p13 * p22 - p12 * p23);
 
-        std::cout << " Normal is " << normal[0] << " " << normal[1] << " " << normal[2] << "\n";
+        //std::cout << "dc == " << dc << "\n";
 
-        glm::vec3 v = a - x;
+        double determ = (ac * r[0] + bc * r[1] + cc * r[2]);
 
-        double d = scalar_multiplication(normal, v);
-
-        std::cout << "d = " << d << "\n";
-
-        glm::vec3 w = y - x;
-
-        std::cout << " w is " << w[0] << " " << w[1] << " " << w[2] << "\n";
-
-        double e = scalar_multiplication(normal, w);
-
-        std::cout << "e = " << e << "\n";
-
-        glm::vec3 cross_point;
-
-        if (e != 0)
+        if (abs(determ) < 0.000001)
         {
-            glm::vec3 temp = w;
-            temp *= d;
-            temp /= e;
-            cross_point = x + temp;
-            //cross_point *= d;
-            //cross_point /= e;
-
-            std::cout << " cross_point is " << cross_point[0] << " " << cross_point[1] << " " << cross_point[2] << "\n";
-            //std::cout << "d = " << d << "\n";
-
-            double abc = trinagle_size(a, b, c);
-            double abd = trinagle_size(a, b, cross_point);
-            double bcd = trinagle_size(cross_point, b, c);
-            double cad = trinagle_size(a, cross_point, c);
-
-            std::cout << "squares = " << abc << " " << abd + bcd + cad << "\n";
-
+            return false;
         }
+
+        //std::cout << "determ == " << determ << "\n";
+
+        double t = - dc / (ac * r[0] + bc * r[1] + cc * r[2]);
+
+        //std::cout << "t  == " << t << "\n";
+
+        if (t < 0)
+            return false;
+
+        glm::vec3 point = r;
+
+        point *= t;
+
+        point = point + x;
+        a += x;
+        b += x;
+        c += x;
+
+        //std::cout << "cross_point = " << point[0] << " " << point[1] << " " << point[2] << "\n";
+
+        double abc = trinagle_size(a, b, c);
+        double abd = trinagle_size(a, b, point);
+        double bcd = trinagle_size(point, b, c);
+        double acd = trinagle_size(a, point, c);
+
+        //std::cout << " s1 = " << abc << " s2 = " << abd + bcd + acd << "\n";
+
+        if (abs(abc - (abd + bcd + acd)) < 0.0001){
+            //std:: cout << "return true\n";
+            return true;
+        }
+
+        return false;
     }
 
+    bool check_point(glm::vec3 point, std::vector<std::vector<glm::vec3>> true_faces){
+
+        int inside = 0;
+        int outside = 0;
+
+        glm::vec3 r;
+        for (double x = -0.5; x < 0.5; x += 0.2){
+            for (double y = -0.5; y < 0.5; y += 0.2){
+                for (double z = -0.5; z < 0.5; z += 0.2){
+                    r = glm::vec3({x, y, z});
+                        int cross_count = 0;
+                        for (int i = 0; i < true_faces.size(); i++){
+                            if (isCross(true_faces[i][0], true_faces[i][1], true_faces[i][2], point, r))
+                            {
+                                cross_count += 1;
+                            }
+                        }
+
+                        if (cross_count % 2 == 1)
+                        {
+                            inside += 1;
+                        }
+                        else
+                        {
+                            outside += 1;
+                        }
+
+                }
+            }
+        }
+
+        //std::cout << "inside = " << inside << " outside = " << outside << "\n";
+
+        if ( inside > outside)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    std::vector<std::vector<std::vector<bool>>> segmentation(std::vector<std::vector<glm::vec3>>& true_faces, int side){
+
+        std::vector<std::vector<std::vector<bool>>> result = std::vector<std::vector<std::vector<bool>>>(side, std::vector<std::vector<bool>>(side, std::vector<bool>(side, false)));
+        std::cout << "segmentation is start\n";
+        for (int x = 0; x < side; x++)
+        for (int y = 0; y < side; y++)
+        for (int z = 0; z < side; z++){
+            double px = -0.5 + (double)(x) / side;
+            double py = -0.5 + (double)(y) / side;
+            double pz = -0.5 + (double)(z) / side;
+            glm::vec3 point = {px, py, pz};
+            if (check_point(point, true_faces))
+            {
+                //std::cout << "add\n";
+                result[x][y][z] = true;
+            }
+                
+        }
+        std::cout << "segmentation is end\n";
+
+        return result;
+    }
 
 };
