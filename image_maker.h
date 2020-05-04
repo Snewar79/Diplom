@@ -11,7 +11,8 @@ double rotate_x = 0;
 std::vector<std::vector<glm::vec3>> faces_data;
 std::vector<std::vector<std::vector<bool>>> exist_points;
 void draw_box(double size, glm::vec3 offset, bool fill,  glm::vec3 color, double alpha);
-
+data_holder<float> temp_data;
+diff_system solve_system(0);
 
 string loadedModel = "none";
 string view_mode = "model";
@@ -21,7 +22,8 @@ bool size_is_ok = false;
 void print_exist_points(){
     
     int side = exist_points.size();
-
+    temp_data = solve_system.get_temp_data();
+    solve_system.get_temp_data().print();
     //std::cout << "try print " << side << "\n";
     for (int x = 0; x < side; x++)
     for (int y = 0; y < side; y++)
@@ -33,7 +35,15 @@ void print_exist_points(){
         glm::vec3 point = {px, y, pz};
         if (exist_points[x][y][z])
         {
-            draw_box(1.0 /( 2 * side), glm::vec3{px, py, pz}, true, glm::vec3{0.5, 0.5, 0.5}, 1.0);
+            double current_temp = temp_data[x][y][z];
+            current_temp += 200;
+
+            double part = current_temp / 400;
+            glm::vec3 color;
+
+            color = {part, 0, 1.0 - part};
+
+            draw_box(1.0 /( 2 * side), glm::vec3{px, py, pz}, true, color, 1.0);
             draw_box(1.0 /( 2 * side), glm::vec3{px, py, pz}, false, glm::vec3{0, 0, 0}, 1.0);
         }
     }

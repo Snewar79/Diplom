@@ -35,6 +35,7 @@ void print_menu(){
     std::cout << "2. Parse model\n";
     std::cout << "3. View mode\n";
     std::cout << "4. Parsed mode\n";
+    std::cout << "5. Save temp\n";
 }
 
 void choose_menu(char c){
@@ -69,6 +70,7 @@ void choose_menu(char c){
         
         getchar();
         getchar();
+        glutPostRedisplay();
         return;
     }
 
@@ -87,21 +89,42 @@ void choose_menu(char c){
         std::vector<std::vector<std::vector<bool>>> parsed_data = parser.segmentation(faces_data, side);
 
         exist_points = parsed_data;
+        solve_system = diff_system(side);
+        solve_system.set_exist(exist_points);
 
         std::cout << "Ok parsing, press enter...";
         getchar();
+        glutPostRedisplay();
         getchar();
     }
 
     if (c == '3')
     {
         glutDisplayFunc(display_model);
+        glutPostRedisplay();
     }
 
     if (c == '4')
     {
         glutDisplayFunc(display_data);
+        glutPostRedisplay();
     }
+
+    if (c == '5')
+    {
+        std::cout << "Enter temperature: ";
+        double temp;
+        std::cin >> temp;
+        solve_system.set_temp_all(temp);
+        glutPostRedisplay();
+    }
+
+    if (c == '6')
+    {
+        solve_system.forward_step();
+        glutPostRedisplay();
+    }
+
 }
 
 int main(int argc, char** argv)
@@ -111,14 +134,14 @@ int main(int argc, char** argv)
     system("clear");
 
     while (1){
-        system("clear");
+        //system("clear");
         print_info();
         print_menu();
         char choose = getchar();
         //std::cout << choose << "\n";
 
-        choose_menu(choose);
 
+        choose_menu(choose);
     }
 
 

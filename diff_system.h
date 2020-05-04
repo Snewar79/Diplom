@@ -68,16 +68,6 @@ public:
         
         simple_temp = 0;
 
-        for (int x = 1; x < 9; x++)
-        for (int y = 1; y < 9; y++)
-        for (int z = 1; z < 9; z++)
-        {
-            temp[x][y][z] = x + y + z;
-            exist[x][y][z] = true;
-            type[x][y][z] = 1;
-            simple_temp += x + y + z;
-        }
-
         temp.print();
         exist.print();
 
@@ -99,11 +89,42 @@ public:
         }
         }
         active_points = xyz2n.size();
-        //std::cout << "hash maps is ok, size == " << xyz2n.size() << " " << n2xyz.size() << "\n";
+        std::cout << "hash maps is ok, size == " << xyz2n.size() << " " << n2xyz.size() << "\n";
+    }
+
+    void set_exist(std::vector<std::vector<std::vector<bool>>> _exist_points)
+    {
+        exist.set(_exist_points);
+        math_hash();
+    }
+
+    void set_temp_all(double _temp)
+    {
+        for (int i = 0; i < n2xyz.size(); i++)
+        {
+            std::cout << "try set\n";
+            triple coords = n2xyz[i];
+            temp[coords.x][coords.y][coords.z] = _temp;
+        }
+    }
+
+    data_holder<float> get_temp_data()
+    {
+        return temp;
     }
 
     bool isInit(){
         return init;
+    }
+
+    bool real_exist(triple coords)
+    {
+        //std::cout << "check coords " << coords.x << " " << coords.y << " " << coords.z << "\n";
+        if (coords.x >=0 && coords.x < data_size
+            && coords.y >=0 && coords.y < data_size
+            && coords.z >=0 && coords.z < data_size)
+        return exist[coords.x][coords.y][coords.z];
+        else return false;
     }
 
     void forward_step(){
@@ -137,23 +158,24 @@ public:
             zUp = current_triple; zUp.z++;
             zDown = current_triple; zDown.z--;
             
-            
-
             // xUp
-            if (exist[xUp.x][xUp.y][xUp.z])
+            if (real_exist(xUp))
             {
                 //std::cout << "has xUp\n";
                 matrixA[i][xyz2n[xUp]] = (a * a * tau) / (h * h); //fixme
                 //std::cout << "xyz = " <<  xUp.x << " " << xUp.y << " " << xUp.z << "\n";
                 A(i, xyz2n[xUp]) = (a * a * tau) / (h * h);
+                //std::cout << "there\n";
             }
             else{
                 skip_count++;
                 //A(i, xyz2n[xUp]) = 400;
             }
 
+            //std::cout << "there2\n";
+
             // xDown
-            if (exist[xDown.x][xDown.y][xDown.z])
+            if (real_exist(xDown))
             {
                 //std::cout << "has xDown\n";
                 matrixA[i][xyz2n[xDown]] = (a * a * tau) / (h * h); //fixme
@@ -161,11 +183,14 @@ public:
             }
             else{
                 skip_count++;
+                //std::cout << "hasnt xDown\n";
                 //A(i, xyz2n[xDown]) = 400;
             }
 
+            //std::cout << "there3\n";
+
             //yUp
-            if (exist[yUp.x][yUp.y][yUp.z])
+            if (real_exist(yUp))
             {
                 //std::cout << "has yUp\n";
                 matrixA[i][xyz2n[yUp]] = (a * a * tau) / (h * h); //fixme
@@ -176,8 +201,10 @@ public:
                 //A(i, xyz2n[yUp]) = 400;
             }
 
+            //std::cout << "there4\n";
+
             //yDown
-            if (exist[yDown.x][yDown.y][yDown.z])
+            if (real_exist(yDown))
             {
                 //std::cout << "has yDown\n";
                 matrixA[i][xyz2n[yDown]] = (a * a * tau) / (h * h); //fixme
@@ -188,8 +215,10 @@ public:
                 //A(i, xyz2n[yDown]) = 400;
             }
 
+            //std::cout << "there5\n";
+
             //zUp
-            if (exist[zUp.x][zUp.y][zUp.z])
+            if (real_exist(zUp))
             {
                 //std::cout << "has zUp" << zUp.x << " " << zUp.y << " " << zUp.z << "\n";
                 matrixA[i][xyz2n[zUp]] = (a * a * tau) / (h * h); //fixme
@@ -200,8 +229,9 @@ public:
                 //A(i, xyz2n[zUp]) = 400;
             }
 
+            //std::cout << "there6\n";
             //zDown
-            if (exist[zDown.x][zDown.y][zDown.z])
+            if (real_exist(zDown))
             {
                 //std::cout << "has zDown\n";
                 matrixA[i][xyz2n[zDown]] = (a * a * tau) / (h * h); //fixme
@@ -211,6 +241,7 @@ public:
                 skip_count++;
                 //A(i, xyz2n[zDown]) = 400;
             }
+            //std::cout << "there7\n";
 
             matrixA[i][i] = - (1 + ((6 - skip_count) * a * a * tau) / (h * h));
             A(i, i) = matrixA[i][i];
@@ -236,7 +267,6 @@ public:
         for (int i = 0; i < active_points; i ++){
             triple current_triple = n2xyz[i];
             temp[current_triple.x][current_triple.y][current_triple.z] = x(i);
-
         }
 
         //std::cout << "forward step is called\n";

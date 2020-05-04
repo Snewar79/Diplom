@@ -32,6 +32,10 @@ public:
         return data[n];
     }
 
+    void set(std::vector<std::vector<std::vector<data_type>>> _exist_points){
+        data = _exist_points;
+    }
+
     void print(){
         for (int z = 0; z < data_size; z++){
             std::cout << "Layer z = " << z << "\n";
