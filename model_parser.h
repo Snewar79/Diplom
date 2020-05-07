@@ -250,9 +250,9 @@ public:
         int outside = 0;
 
         glm::vec3 r;
-        for (double x = -0.5; x < 0.5; x += 0.2){
-            for (double y = -0.5; y < 0.5; y += 0.2){
-                for (double z = -0.5; z < 0.5; z += 0.2){
+        for (double x = -0.5; x < 0.5; x += 0.3){
+            for (double y = -0.5; y < 0.5; y += 0.3){
+                for (double z = -0.5; z < 0.5; z += 0.3){
                     r = glm::vec3({x, y, z});
                         int cross_count = 0;
                         for (int i = 0; i < true_faces.size(); i++){
@@ -298,7 +298,7 @@ public:
             glm::vec3 point = {px, py, pz};
             if (check_point(point, true_faces))
             {
-                //std::cout << "add\n";
+                std::cout << "add " << x << " " << y << " " << z << "\n";
                 result[x][y][z] = true;
             }
                 

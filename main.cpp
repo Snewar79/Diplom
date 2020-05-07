@@ -10,6 +10,8 @@ using Eigen::MatrixXd;
 
 model_parser parser;
 
+double gloabl_time = 0;
+
 void create_image_loop(int *argc, char** argv)
 {
     image_maker img(argc, argv);
@@ -28,6 +30,9 @@ void print_info()
     else{
         std::cout << "length of side: " << "not set" << "\n";
     }
+
+    std::cout << "parametrs: a = 0.32, h = 0.01, tau = 0.1\n";
+    std::cout << "time = " << gloabl_time << "\n";
 }
 
 void print_menu(){
@@ -36,6 +41,10 @@ void print_menu(){
     std::cout << "3. View mode\n";
     std::cout << "4. Parsed mode\n";
     std::cout << "5. Save temp\n";
+    std::cout << "6. Set parametrs\n";
+    std::cout << "7. Check temp\n";
+    std::cout << "8. Set type of point\n";
+    std::cout << "9. Do step\n";
 }
 
 void choose_menu(char c){
@@ -102,12 +111,14 @@ void choose_menu(char c){
     {
         glutDisplayFunc(display_model);
         glutPostRedisplay();
+        view_mode = "model view";
     }
 
     if (c == '4')
     {
         glutDisplayFunc(display_data);
         glutPostRedisplay();
+        view_mode = "parsed model";
     }
 
     if (c == '5')
@@ -118,11 +129,21 @@ void choose_menu(char c){
         solve_system.set_temp_all(temp);
         glutPostRedisplay();
     }
+    
 
-    if (c == '6')
+    if (c == '9')
     {
         solve_system.forward_step();
         glutPostRedisplay();
+        gloabl_time = gloabl_time + 0.1;
+    }
+
+    if (c == '7'){
+        int x, y, z;
+        std::cin >> x >> y >> z;
+        std::cout << "temp is: " << temp_data[x][y][z];
+        getchar();
+        getchar();
     }
 
 }
@@ -134,7 +155,7 @@ int main(int argc, char** argv)
     system("clear");
 
     while (1){
-        //system("clear");
+        system("clear");
         print_info();
         print_menu();
         char choose = getchar();

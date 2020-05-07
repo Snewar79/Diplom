@@ -50,7 +50,7 @@ private:
 
 
     double a = 0.32;
-    double h = 0.1;
+    double h = 0.01;
     double tau = 0.1;
 
     bool init = false;

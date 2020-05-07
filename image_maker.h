@@ -23,11 +23,11 @@ void print_exist_points(){
     
     int side = exist_points.size();
     temp_data = solve_system.get_temp_data();
-    solve_system.get_temp_data().print();
+    //solve_system.get_temp_data().print();
     //std::cout << "try print " << side << "\n";
     for (int x = 0; x < side; x++)
     for (int y = 0; y < side; y++)
-    for (int z = 0; z < side; z++){
+    for (int z = 0; z < side / 2; z++){
         double px = -0.5 + double(x) / side + 0.5 / side;
         double py = -0.5 + double(y) / side + 0.5 / side;
         double pz = -0.5 + double(z) / side + 0.5 / side;
@@ -41,7 +41,15 @@ void print_exist_points(){
             double part = current_temp / 400;
             glm::vec3 color;
 
-            color = {part, 0, 1.0 - part};
+            if (part < 0.5)
+            {
+                color = {0, part, 0.5 - part};
+            }
+            else
+            {
+                part -= 0.5;
+                color = {part , 0.5 - part, 0};
+            }
 
             draw_box(1.0 /( 2 * side), glm::vec3{px, py, pz}, true, color, 1.0);
             draw_box(1.0 /( 2 * side), glm::vec3{px, py, pz}, false, glm::vec3{0, 0, 0}, 1.0);
@@ -214,7 +222,7 @@ public:
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
         
         // Create window
-        glutCreateWindow("Awesome Cube");
+        glutCreateWindow("Hot checker");
 
         //  Enable Z-buffer depth test
         glEnable(GL_DEPTH_TEST);
